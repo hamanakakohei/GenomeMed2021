@@ -5,15 +5,14 @@ import subprocess
 import random
 import codecs
 import statsmodels.stats.multitest as multi
+import numpys as np
+import matplotlib.pyplot as plt
 
 N=34
 JsonFile="tmp.toppfun.random"
-Q=0.05
+Q=0.01
 GoFile__328gene="328geneThr20-500fdr1.0.txt"
 Entrez19277="enst_entrezid.hg1938.19277.txt"
-#Entrez52genes="entrez__52gene.txt"
-#Entrez52genes="entrez__41gene.txt"
-#Entrez52genes="entrez__35gene.txt"
 Entrez52genes="entrez__34gene.txt"
 
 Entrezs__l = pd.read_csv(Entrez19277,sep="\t",header=None)[1].to_list()
@@ -51,6 +50,7 @@ for i in range(1):
   NMf__l.append(N_MfRandPQ)
   NBp__l.append(N_BpRandPQ)
   NCc__l.append(N_CcRandPQ)
+
 MfRand__p2 = MfRand__p[MfRand__p.ID.isin(Mf328q__l)]
 BpRand__p2 = BpRand__p[BpRand__p.ID.isin(Bp328q__l)]
 CcRand__p2 = CcRand__p[CcRand__p.ID.isin(Cc328q__l)]
@@ -59,16 +59,8 @@ BpRand__p2["QOfGoInSigOneIn328"] = BpRandPQ__l[1]
 CcRand__p2["QOfGoInSigOneIn328"] = CcRandPQ__l[1]
 pd.concat([MfRand__p2,BpRand__p2,CcRand__p2]).to_csv("34geneQ" + str(Q) + "0.1In328GeneQ0.01GOs.txt",sep="\t",index=False)
 
-# 52: mf ->7 (24/1000); cc ->33; bp->63 (0/1000)
-# 41: mf ->5 (24/1000); cc ->27; bp->56 (0/1000)
-# 35: mf ->6 (24/1000); cc ->31; bp->90 (0/1000)
-# 34: mf ->6 (24/1000); cc ->31; bp->90 (0/1000) (Q<0.1
-# 34: mf ->0 (24/1000); cc ->28; bp->50 (0/1000) (Q<0.05
-import numpys as np
-import matplotlib.pyplot as plt
-
 val = 50
-TYPE = "bp"
+TYPE = "bp" #"cc", "mf"
 PERM=1000
 OUT = TYPE + "Q" + str(Q) + "__34gene.png"
 DATA = "NOfQ" + str(Q) + TYPE + "__34gene" + str(PERM) + "perms.txt"
@@ -85,3 +77,4 @@ plt.axvline(x=val,linestyle="dashed",color="red")
 plt.title("p-value: " + str(p) )
 fig.savefig(OUT)
 plt.close()
+
